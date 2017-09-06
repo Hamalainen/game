@@ -13,6 +13,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+
 @SuppressWarnings("serial")
 public class Board extends JPanel implements ActionListener {
 
