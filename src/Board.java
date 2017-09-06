@@ -3,12 +3,14 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -47,6 +49,7 @@ private static int speed = 45;
 private Snake snake = new Snake();
 private Food food = new Food();
 private String userName = "";
+private Image head;
 
 public Board() {
 
@@ -73,20 +76,19 @@ void draw(Graphics g) {
     if (inGame == true) {
         g.setColor(Color.green);
         g.fillRect(food.getFoodX(), food.getFoodY(), PIXELSIZE, PIXELSIZE); // food
+        
+       
 
         // Draw our snake.
         for (int i = 0; i < snake.getJoints(); i++) {
             // Snake's head
-            if (i == 0) {
-                g.setColor(Color.RED);
-                g.fillRect(snake.getSnakeX(i), snake.getSnakeY(i),
-                        PIXELSIZE, PIXELSIZE);
+          
+                
+                g.drawImage(head, snake.getSnakeX(i), snake.getSnakeY(i), this);
                 // Body of snake
-            } else {
-                g.fillRect(snake.getSnakeX(i), snake.getSnakeY(i),
-                        PIXELSIZE, PIXELSIZE);
-            }
+            
         }
+        
 
         // Sync our graphics together
         Toolkit.getDefaultToolkit().sync();
@@ -105,10 +107,12 @@ void initializeGame() {
         snake.setSnakeY(BOARDHEIGHT / 2);
     }
     // Start off our snake moving right
-    snake.setMovingRight(true);
+   // snake.setMovingRight(true);
 
     // Generate our first 'food'
     food.createFood();
+    ImageIcon iih = new ImageIcon("Images/Chopper.png");
+    head = iih.getImage();
 
     // set the timer to record our game's speed / make the game move
     timer = new Timer(speed, this);
