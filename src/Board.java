@@ -11,6 +11,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -25,7 +26,7 @@ public class Board extends JPanel implements ActionListener {
 private final static int BOARDWIDTH = 1000;
 private final static int BOARDHEIGHT = 980;
 
-// Used to represent pixel size of food & our snake's joints
+// Used to represent pixel size of food & our Chopper's joints
 private final static int PIXELSIZE = 25;
 
 // The total amount of pixels the game could possibly have.
@@ -41,14 +42,13 @@ private boolean inGame = true;
 // Timer used to record tick times
 private Timer timer;
 
-// Used to set game speed, the lower the #, the faster the snake travels
+// Used to set game speed, the lower the #, the faster the Chopper travels
 // which in turn
 // makes the game harder.
 private static int speed = 45;
 
-// Instances of our snake & food so we can use their methods
-private Snake snake = new Snake();
-private Food food = new Food();
+// Instances of our Chopper & food so we can use their methods
+private Chopper Chopper = new Chopper();
 private String userName = "";
 private Image head;
 
@@ -60,7 +60,10 @@ public Board() {
 
     setPreferredSize(new Dimension(BOARDWIDTH, BOARDHEIGHT));
 
+
+
     initializeGame();
+   
 }
 
 // Used to paint our components to the screen
@@ -71,106 +74,48 @@ protected void paintComponent(Graphics g) {
     draw(g);
 }
 
-// Draw our Snake & Food (Called on repaint()).
+// Draw our Chopper & Food (Called on repaint()).
 void draw(Graphics g) {
-    // Only draw if the game is running / the snake is alive
+    // Only draw if the game is running / the Chopper is alive
     if (inGame == true) {
         g.setColor(Color.green);
-        g.fillRect(food.getFoodX(), food.getFoodY(), PIXELSIZE, PIXELSIZE); // food
+      
         
        
 
-        // Draw our snake.
-        for (int i = 0; i < snake.getJoints(); i++) {
-            // Snake's head
+        // Draw our Chopper.
+
           
                 
-                g.drawImage(head, snake.getSnakeX(i), snake.getSnakeY(i), this);
-                // Body of snake
+                g.drawImage(head, (int)(Chopper.getX()), (int)(Chopper.getY()), this);
+                // Body of Chopper
             
         }
         
 
         // Sync our graphics together
         Toolkit.getDefaultToolkit().sync();
-    } else {
-        // If we're not alive, then we end our game
-        endGame(g);
-    }
+     
 }
 
 void initializeGame() {
-    snake.setJoints(3); // set our snake's initial size
+    
 
-    // Create our snake's body
-    for (int i = 0; i < snake.getJoints(); i++) {
-        snake.setSnakeX(BOARDWIDTH / 2);
-        snake.setSnakeY(BOARDHEIGHT / 2);
-    }
-    // Start off our snake moving right
-   // snake.setMovingRight(true);
 
-    // Generate our first 'food'
-    food.createFood();
     ImageIcon iih = new ImageIcon("Images/Chopper.png");
     head = iih.getImage();
 
     // set the timer to record our game's speed / make the game move
     timer = new Timer(speed, this);
     timer.start();
+    
 }
 
-// if our snake is in the close proximity of the food..
-void checkFoodCollisions() {
+// if our Chopper is in the close proximity of the food..
 
-    if ((proximity(snake.getSnakeX(0), food.getFoodX(), 20))
-            && (proximity(snake.getSnakeY(0), food.getFoodY(), 20))) {
 
-        System.out.println("intersection");
-        // Add a 'joint' to our snake
-        snake.setJoints(snake.getJoints() + 1);
-        // Create new food
-        food.createFood();
-    }
-}
+// Used to check collisions with Chopper's self and board edges
 
-// Used to check collisions with snake's self and board edges
-void checkCollisions() {
-
-    // If the snake hits its' own joints..
-    for (int i = snake.getJoints(); i > 0; i--) {
-
-        // Snake cant intersect with itself if it's not larger than 5
-        if ((i > 5)
-                && (snake.getSnakeX(0) == snake.getSnakeX(i) && (snake
-                        .getSnakeY(0) == snake.getSnakeY(i)))) {
-            inGame = false; // then the game ends
-        }
-    }
-
-    // If the snake intersects with the board edges..
-    if (snake.getSnakeY(0) >= BOARDHEIGHT) {
-        inGame = false;
-    }
-
-    if (snake.getSnakeY(0) < 0) {
-        inGame = false;
-    }
-
-    if (snake.getSnakeX(0) >= BOARDWIDTH) {
-        inGame = false;
-    }
-
-    if (snake.getSnakeX(0) < 0) {
-        inGame = false;
-    }
-
-    // If the game has ended, then we can stop our timer
-    if (!inGame) {
-        timer.stop();
-        userName = (String)JOptionPane.showInputDialog(null,null);
-    }
-}
 
 void endGame(Graphics g) {
 
@@ -199,13 +144,12 @@ void endGame(Graphics g) {
 public void actionPerformed(ActionEvent e) {
     if (inGame == true) {
 
-        checkFoodCollisions();
-        checkCollisions();
-        snake.move();
+       
 
-       // System.out.println(snake.getSnakeX(0) + " " + snake.getSnakeY(0)
-         //       + " " + food.getFoodX() + ", " + food.getFoodY());
+    	
+      
     }
+    
     // Repaint or 'render' our screen
     repaint();
 }
@@ -217,37 +161,29 @@ private class Keys extends KeyAdapter {
 
         int key = e.getKeyCode();
 
-        if ((key == KeyEvent.VK_LEFT) && (!snake.isMovingRight())) {
-            snake.setMovingLeft(true);
-            snake.setMovingUp(false);
-            snake.setMovingDown(false);
+        if (key == KeyEvent.VK_LEFT) {
+            Chopper.Left();
+  
         }
 
-        if ((key == KeyEvent.VK_RIGHT) && (!snake.isMovingLeft())) {
-            snake.setMovingRight(true);
-            snake.setMovingUp(false);
-            snake.setMovingDown(false);
+        if (key == KeyEvent.VK_RIGHT) {
+            Chopper.Right();
         }
 
-        if ((key == KeyEvent.VK_UP) && (!snake.isMovingDown())) {
-            snake.setMovingUp(true);
-            snake.setMovingRight(false);
-            snake.setMovingLeft(false);
+        if (key == KeyEvent.VK_UP) {
+            Chopper.Up();
+
         }
 
-        if ((key == KeyEvent.VK_DOWN) && (!snake.isMovingUp())) {
-            snake.setMovingDown(true);
-            snake.setMovingRight(false);
-            snake.setMovingLeft(false);
+        if (key == KeyEvent.VK_DOWN) {
+            Chopper.Down();
+          
         }
 
-        if ((key == KeyEvent.VK_ENTER) && (inGame == false)) {
+        if (key == KeyEvent.VK_ENTER) {
 
             inGame = true;
-            snake.setMovingDown(false);
-            snake.setMovingRight(false);
-            snake.setMovingLeft(false);
-            snake.setMovingUp(false);
+
 
             initializeGame();
         }
@@ -255,15 +191,4 @@ private class Keys extends KeyAdapter {
 }
 
 
-private boolean proximity(int a, int b, int closeness) {
-    return Math.abs((long) a - b) <= closeness;
-}
-
-public static int getAllDots() {
-    return TOTALPIXELS;
-}
-
-public static int getDotSize() {
-    return PIXELSIZE;
-}
 }
