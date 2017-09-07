@@ -2,10 +2,7 @@ public class Chopper {
 
 private double x = 1;
 private double y = 1;
-private double maxX = 300;
-private double minX = 0;
-private double maxY = 300;
-private double minY = 0;
+
 
 // Stores direction of our Chopper
 
