@@ -10,14 +10,20 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
+import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
 import javax.swing.ImageIcon;
+import javax.swing.InputMap;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.KeyStroke;
 import javax.swing.Timer;
+import javax.swing.WindowConstants;
 
 
-@SuppressWarnings("serial")
+
 public class Board extends JPanel implements ActionListener {
 
 // TODO: Implement a way for the player to win
@@ -48,18 +54,17 @@ private Timer timer;
 private static int speed = 45;
 
 // Instances of our Chopper & food so we can use their methods
-private Chopper Chopper = new Chopper();
+private Chopper chopper = new Chopper();
 private String userName = "";
-private Image head;
 
-public Board() {
 
-    addKeyListener(new Keys());
-    setBackground(Color.BLACK);
+
+public Board() { 
+	
+	addKeyListener(new Keys());
+    setBackground(Color.white);
     setFocusable(true);
-
     setPreferredSize(new Dimension(BOARDWIDTH, BOARDHEIGHT));
-
 
 
     initializeGame();
@@ -74,37 +79,22 @@ protected void paintComponent(Graphics g) {
     draw(g);
 }
 
+
 // Draw our Chopper & Food (Called on repaint()).
 void draw(Graphics g) {
     // Only draw if the game is running / the Chopper is alive
-    if (inGame == true) {
-        g.setColor(Color.green);
-      
-        
-       
-
-        // Draw our Chopper.
-
-          
-                
-                g.drawImage(head, (int)(Chopper.getX()), (int)(Chopper.getY()), this);
-                // Body of Chopper
-            
-        }
-        
-
-        // Sync our graphics together
-        Toolkit.getDefaultToolkit().sync();
-     
+    if (inGame == true)
+    {
+    	// Draw our Chopper.      
+    	g.drawImage(chopper.getChopper(), (int)(chopper.getX()), (int)(chopper.getY()), 75, 50, null);
+    }
+     // Sync our graphics together
+     Toolkit.getDefaultToolkit().sync();
 }
 
-void initializeGame() {
-    
-
-
-    ImageIcon iih = new ImageIcon("Images/Chopper.png");
-    head = iih.getImage();
-
+void initializeGame()
+{
+	chopper.setChopper();
     // set the timer to record our game's speed / make the game move
     timer = new Timer(speed, this);
     timer.start();
@@ -162,33 +152,42 @@ private class Keys extends KeyAdapter {
         int key = e.getKeyCode();
 
         if (key == KeyEvent.VK_LEFT) {
-            Chopper.Left();
-  
+            chopper.setVelX(-5);;
         }
 
         if (key == KeyEvent.VK_RIGHT) {
-            Chopper.Right();
+            chopper.setVelX(5);
         }
 
         if (key == KeyEvent.VK_UP) {
-            Chopper.Up();
-
+            chopper.setVelY(-5);
         }
 
         if (key == KeyEvent.VK_DOWN) {
-            Chopper.Down();
-          
+            chopper.setVelY(5);
+        }
+    }
+
+    
+    public void keyReleased(KeyEvent e) {
+
+        int key = e.getKeyCode();
+
+        if (key == KeyEvent.VK_LEFT) {
+            chopper.setVelX(0);
         }
 
-        if (key == KeyEvent.VK_ENTER) {
+        if (key == KeyEvent.VK_RIGHT) {
+            chopper.setVelX(0);
+        }
 
-            inGame = true;
+        if (key == KeyEvent.VK_UP) {
+            chopper.setVelY(0);
+        }
 
-
-            initializeGame();
+        if (key == KeyEvent.VK_DOWN) {
+            chopper.setVelY(0);
         }
     }
 }
-
-
 }
