@@ -133,7 +133,7 @@ void endGame(Graphics g) {
 @Override
 public void actionPerformed(ActionEvent e) {
     if (inGame == true) {
-
+    	chopper.tick();
        
 
     	
@@ -152,7 +152,8 @@ private class Keys extends KeyAdapter {
         int key = e.getKeyCode();
 
         if (key == KeyEvent.VK_LEFT) {
-            chopper.setVelX(-5);;
+            chopper.setVelX(-5);
+            System.out.println("left");
         }
 
         if (key == KeyEvent.VK_RIGHT) {

@@ -32,6 +32,7 @@ private Image chopper;
 	public void tick() {
 		x += velX;
 		y += velY;
+		System.out.println("tick");
 	}
 	public void setVelX(double velX) {
 		this.velX = velX;
