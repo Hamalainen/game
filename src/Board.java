@@ -134,7 +134,9 @@ void endGame(Graphics g) {
 public void actionPerformed(ActionEvent e) {
     if (inGame == true) {
     	chopper.tick();
-       
+    	if(chopper.getY() < 300) {
+    		chopper.gravity();
+    	}
 
     	
       
@@ -169,7 +171,7 @@ private class Keys extends KeyAdapter {
         }
     }
 
-    
+    /*
     public void keyReleased(KeyEvent e) {
 
         int key = e.getKeyCode();
@@ -190,5 +192,6 @@ private class Keys extends KeyAdapter {
             chopper.setVelY(0);
         }
     }
+    */
 }
 }
