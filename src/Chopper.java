@@ -17,22 +17,25 @@ private Image chopper;
 		return y;
 	}
 
-	public void setY(int y) {
-		this.y = y;
+	public void setY(double velY) {
+		this.y += velY;
 	}
 
 	public int getX() {
 		return x;
 	}
 
-	public void setX(int x) {
-		this.x = x;
+	public void setX(double velX) {
+		this.x += velX;
 	}
 	
 	public void tick() {
-		x += velX;
-		y += velY;
-		System.out.println("tick");
+		setY(this.velY);
+		setX(this.velX);
+		
+		//x += velX;
+		//y += velY;
+		
 	}
 	public void setVelX(double velX) {
 		this.velX = velX;
