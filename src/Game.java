@@ -12,11 +12,12 @@ import javax.swing.KeyStroke;
 
 
 public class Game extends JFrame {
-Chopper chopper = new Chopper();
+	Board board = new Board();
+Chopper chopper = new Chopper(board.GetBoardWidth(), board.GetBoardHeight());
 private boolean running = false;
 private Thread thread;
 Game() {
-    add(new Board());
+    add(board);
     setResizable(false);
     pack();
     setTitle("GET TO THA CHOPPA");
@@ -41,7 +42,7 @@ private synchronized void start() {
 	if(running)
 		return;
 	running = true;
-	thread = new Thread(this);
+//	thread = new Thread(this);
 	thread.start();
 }
 

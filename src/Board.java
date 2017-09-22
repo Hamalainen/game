@@ -3,6 +3,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -43,7 +44,7 @@ private final static int TOTALPIXELS = (BOARDWIDTH * BOARDHEIGHT)
         / (PIXELSIZE * PIXELSIZE);
 
 // Check to see if the game is running
-private boolean inGame = true;
+private boolean inGame = false;
 
 // Timer used to record tick times
 private Timer timer;
@@ -54,9 +55,17 @@ private Timer timer;
 private static int speed = 45;
 
 // Instances of our Chopper & food so we can use their methods
-private Chopper chopper = new Chopper();
+private Chopper chopper = new Chopper(BOARDWIDTH, BOARDHEIGHT);
 private String userName = "";
+private double maxVel = 10;
 
+public int GetBoardWidth() {
+	return BOARDWIDTH;
+}
+
+public int GetBoardHeight() {
+	return BOARDHEIGHT;
+}
 
 
 public Board() { 
@@ -82,12 +91,18 @@ protected void paintComponent(Graphics g) {
 
 // Draw our Chopper & Food (Called on repaint()).
 void draw(Graphics g) {
-    // Only draw if the game is running / the Chopper is alive
-    if (inGame == true)
-    {
-    	// Draw our Chopper.      
-    	g.drawImage(chopper.getChopper(), (int)(chopper.getX()), (int)(chopper.getY()), 75, 50, null);
-    }
+	
+	
+	if(chopper.getVelX() >= 0) {
+		g.drawImage(chopper.getChopper(), (int)(chopper.getX()) - 37, (int)(chopper.getY()), 75, 50, null);
+	}
+	else if(chopper.getVelX() <= 0){
+		g.drawImage(chopper.getChopper(), (int)(chopper.getX()) + 37, (int)(chopper.getY()), -75, 50, null);
+	}
+    
+	
+	
+   //}
      // Sync our graphics together
      Toolkit.getDefaultToolkit().sync();
 }
@@ -134,12 +149,7 @@ void endGame(Graphics g) {
 public void actionPerformed(ActionEvent e) {
     if (inGame == true) {
     	chopper.tick();
-    	if(chopper.getY() < 300) {
-    		chopper.gravity();
-    	}
-
-    	
-      
+    	chopper.gravity();
     }
     
     // Repaint or 'render' our screen
@@ -154,44 +164,34 @@ private class Keys extends KeyAdapter {
         int key = e.getKeyCode();
 
         if (key == KeyEvent.VK_LEFT) {
-            chopper.setVelX(-5);
-            System.out.println("left");
+        	if(chopper.getVelX() >= -maxVel) {
+        		chopper.setVelX(-3);
+        	}
         }
 
         if (key == KeyEvent.VK_RIGHT) {
-            chopper.setVelX(5);
+        	 if(chopper.getVelX() <= maxVel) {
+        		chopper.setVelX(3);
+        	 }
         }
 
         if (key == KeyEvent.VK_UP) {
-            chopper.setVelY(-5);
+        	if(chopper.getVelY() >= -maxVel) {
+        		chopper.setVelY(-3);
+        	}
         }
 
         if (key == KeyEvent.VK_DOWN) {
-            chopper.setVelY(5);
+            if(chopper.getVelY() <= maxVel) {
+            	chopper.setVelY(3);
+            }
+            	
+        }
+        if (key == KeyEvent.VK_ENTER) {
+        	inGame = true;
         }
     }
 
-    /*
-    public void keyReleased(KeyEvent e) {
 
-        int key = e.getKeyCode();
-
-        if (key == KeyEvent.VK_LEFT) {
-            chopper.setVelX(0);
-        }
-
-        if (key == KeyEvent.VK_RIGHT) {
-            chopper.setVelX(0);
-        }
-
-        if (key == KeyEvent.VK_UP) {
-            chopper.setVelY(0);
-        }
-
-        if (key == KeyEvent.VK_DOWN) {
-            chopper.setVelY(0);
-        }
-    }
-    */
 }
 }
