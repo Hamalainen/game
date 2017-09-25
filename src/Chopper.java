@@ -8,10 +8,14 @@ private double x = 39;
 private double y = 1;
 private double velX = 0;
 private double velY = 0;
-private double maxVel = 5;
+private double maxVel = 8;
 private Image chopper;
 private int width;
 private int height;
+private boolean right = false;
+private boolean left = false;
+private boolean up = false;
+private boolean down = false;
 // Stores direction of our Chopper
 
 public Chopper(int width, int height)
@@ -19,6 +23,29 @@ public Chopper(int width, int height)
 	this.width = width;
 	this.height = height;
 }
+
+	public void setRight() {
+		right = true;
+		left = false;
+	}
+	public void setLeft() {
+		right = false;
+		left = true;
+	}
+	public void setUp() {
+		up = true;
+		down = false;
+	}
+	public void setDown() {
+		up = false;
+		down = true;
+	}
+	public void setNothing() {
+		right = false;
+		left = false;
+		up = false;
+		down = false;
+	}
 
 	public double getY() {
 		return y;
@@ -69,10 +96,35 @@ public Chopper(int width, int height)
 	public void tick() {
 		setY(this.velY);
 		setX(this.velX);
+		if(right) {
+			setVelX(0.8);
+		}
+		if(left) {
+			setVelX(-0.8);
+		}
+		if(up) {
+			setVelY(-1.2);
+		}
+		if(down) {
+			setVelY(0.8);
+		}
 		
+		if(velX > 0.3) {
+			setVelX(-0.3);
+		}
+		else if(velX < -0.3){
+			setVelX(0.3);
+		}
+		
+		if(velY > 0.3) {
+			setVelY(-0.3);
+		}
+		else {
+			setVelY(0.3);
+		}
 	}
-	public void setVelX(double velX) {
-			this.velX += velX;
+	public void setVelX(double velX) {	
+		this.velX += velX;
 	}
 	
 	public double getVelX() {
@@ -86,25 +138,9 @@ public Chopper(int width, int height)
 		return this.velY;
 	}
 	public void gravity() {
-			setVelY(0.2); 
+			setVelY(0.5); 
 	}
-	
-	public void Left() {
-		this.x = getX()  -3;
-		setX(x);
-	}
-	public void Right() {
-		this.x = getX() +3;
-		setX(x);
-	}
-	public void Down() {
-		this.y = getY() +3;
-		setY(y);
-	}
-	public void Up() {
-		this.y = getY() -3;
-		setY(y);
-	}
+
 	public void setChopper() {
 		chopper = loadImage("Images/Chopper.png");
 	}
