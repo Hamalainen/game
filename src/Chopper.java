@@ -24,27 +24,17 @@ public Chopper(int width, int height)
 	this.height = height;
 }
 
-	public void setRight() {
-		right = true;
-		left = false;
+	public void setRight(boolean delta) {
+		right = delta;
 	}
-	public void setLeft() {
-		right = false;
-		left = true;
+	public void setLeft(boolean delta) {
+		left = delta;
 	}
-	public void setUp() {
-		up = true;
-		down = false;
+	public void setUp(boolean delta) {
+		up = delta;
 	}
-	public void setDown() {
-		up = false;
-		down = true;
-	}
-	public void setNothing() {
-		right = false;
-		left = false;
-		up = false;
-		down = false;
+	public void setDown(boolean delta) {
+		down = delta;
 	}
 
 	public double getY() {

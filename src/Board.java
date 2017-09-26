@@ -1,10 +1,12 @@
-    import java.awt.Color;
+    import java.awt.AlphaComposite;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -57,6 +59,9 @@ private static int speed = 45;
 // Instances of our Chopper & food so we can use their methods
 private Chopper chopper = new Chopper(BOARDWIDTH, BOARDHEIGHT);
 private String userName = "";
+private boolean pause = false;;
+
+
 
 public int GetBoardWidth() {
 	return BOARDWIDTH;
@@ -74,7 +79,6 @@ public Board() {
     setFocusable(true);
     setPreferredSize(new Dimension(BOARDWIDTH, BOARDHEIGHT));
 
-
     initializeGame();
    
 }
@@ -91,24 +95,31 @@ protected void paintComponent(Graphics g) {
 // Draw our Chopper & Food (Called on repaint()).
 void draw(Graphics g) {
 	
-	
-	if(chopper.getVelX() >= 0) {
+	 if(chopper.getVelX() >= 0) {
 		g.drawImage(chopper.getChopper(), (int)(chopper.getX()) - 37, (int)(chopper.getY()), 75, 50, null);
+		if(pause) {
+			pauseGame(g);
+		}
 	}
-	else if(chopper.getVelX() <= 0){
+	else if(chopper.getVelX() < 0){
 		g.drawImage(chopper.getChopper(), (int)(chopper.getX()) + 37, (int)(chopper.getY()), -75, 50, null);
+		if(pause) {
+			pauseGame(g);
+		}
 	}
-    
+	
 	
 	
    //}
      // Sync our graphics together
-     Toolkit.getDefaultToolkit().sync();
+    // Toolkit.getDefaultToolkit().sync();
 }
+
 
 void initializeGame()
 {
 	chopper.setChopper();
+	
     // set the timer to record our game's speed / make the game move
     timer = new Timer(speed, this);
     timer.start();
@@ -121,27 +132,32 @@ void initializeGame()
 // Used to check collisions with Chopper's self and board edges
 
 
-void endGame(Graphics g) {
+void pauseGame(Graphics g) {
 
-    // Create a message telling the player the game is over
-    String message = "Game over";
+		
+		final int ALPHA = 175; // how much see-thru. 0 to 255
+	    final Color GP_BG = new Color(75, 75, 75, ALPHA);
+	    String text = "PAUSED";
+	    String fontName = "serif";
+	    Font font = new Font(fontName, Font.BOLD, 15);
+	    g.setFont(font); 
+	    FontMetrics metrics = g.getFontMetrics(font);
+	    int x = BOARDWIDTH /2 - metrics.stringWidth(text) /2;
+	    
+	    g.setColor(GP_BG);
+		g.drawRect(0,0,BOARDWIDTH,BOARDHEIGHT);
+		g.fillRect(0, 0, BOARDWIDTH, BOARDHEIGHT);
+		g.setColor(Color.RED);
+		g.drawString(text, x, BOARDHEIGHT/2);
+		
+		
 
-    // Create a new font instance
-    Font font = new Font("Times New Roman", Font.BOLD, 14);
-    FontMetrics metrics = getFontMetrics(font);
 
-    // Set the color of the text to red, and set the font
-    g.setColor(Color.red);
-    g.setFont(font);
 
-    // Draw the message to the board
-    g.drawString(message, (BOARDWIDTH - metrics.stringWidth(message)) / 2,
-            BOARDHEIGHT / 2);
-        
-
-    System.out.println("Game Ended");
 
 }
+
+
 
 // Run constantly as long as we're in game.
 @Override
@@ -149,7 +165,11 @@ public void actionPerformed(ActionEvent e) {
     if (inGame == true) {
     	chopper.tick();
     	chopper.gravity();
+    	
     }
+    	
+    	
+    
     
     // Repaint or 'render' our screen
     repaint();
@@ -163,23 +183,35 @@ private class Keys extends KeyAdapter {
         int key = e.getKeyCode();
 
         if (key == KeyEvent.VK_LEFT) {
-        	chopper.setLeft();
+        	chopper.setLeft(true);
         }
 
         if (key == KeyEvent.VK_RIGHT) {
-        	chopper.setRight();
+        	chopper.setRight(true);
         }
 
         if (key == KeyEvent.VK_UP) {
-        	chopper.setUp();
+        	chopper.setUp(true);
         }
 
         if (key == KeyEvent.VK_DOWN) {
-        	chopper.setDown();
+        	chopper.setDown(true);
             	
         }
         if (key == KeyEvent.VK_ENTER) {
+        	pause = false;
         	inGame = true;
+        }
+        if (key == KeyEvent.VK_P) {
+        	
+        	if(pause == false) {
+        		pause = true;
+        		inGame = false;
+        	}
+        	else {
+        		pause = false;
+            	inGame = true;
+        	}
         }
     }
     
@@ -189,23 +221,20 @@ private class Keys extends KeyAdapter {
         int key = e.getKeyCode();
 
         if (key == KeyEvent.VK_LEFT) {
-        	chopper.setNothing();
+        	chopper.setLeft(false);
         }
 
         if (key == KeyEvent.VK_RIGHT) {
-        	chopper.setNothing();
+        	chopper.setRight(false);
         }
 
         if (key == KeyEvent.VK_UP) {
-        	chopper.setNothing();
+        	chopper.setUp(false);
         }
 
         if (key == KeyEvent.VK_DOWN) {
-        	chopper.setNothing();
+        	chopper.setDown(false);
             	
-        }
-        if (key == KeyEvent.VK_ENTER) {
-        	inGame = true;
         }
     }
 
