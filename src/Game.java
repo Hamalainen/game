@@ -14,8 +14,7 @@ import javax.swing.KeyStroke;
 public class Game extends JFrame {
 	Board board = new Board();
 Chopper chopper = new Chopper(board.GetBoardWidth(), board.GetBoardHeight());
-private boolean running = false;
-private Thread thread;
+
 Game() {
     add(board);
     setResizable(false);
@@ -37,30 +36,5 @@ public static void main(String[] args) {
     });
 
 }
-
-private synchronized void start() {
-	if(running)
-		return;
-	running = true;
-//	thread = new Thread(this);
-	thread.start();
 }
 
-private synchronized void stop() {
-	if(!running)
-		return;
-	
-	running = false;
-	try {
-		thread.join();
-	} catch (InterruptedException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
-	System.exit(1);
-}
-
-private void tick() {
-	chopper.tick();
-}
-}
