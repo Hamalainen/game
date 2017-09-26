@@ -41,6 +41,7 @@ private static int speed = 45;
 // Instances of our Chopper & food so we can use their methods
 private Chopper chopper = new Chopper(BOARDWIDTH, BOARDHEIGHT);
 private Target target = new Target(BOARDWIDTH);
+private Bomb bomb = new Bomb();
 private boolean pause = false;;
 
 
@@ -85,13 +86,18 @@ void draw(Graphics g) {
 	}	
 	
 	if(chopper.getVelX() >= 0) {
+		g.drawImage(bomb.getBomb(), (int)(chopper.getX()) - 37, (int)(chopper.getY()), 50, 150, null);
 		g.drawImage(chopper.getChopper(), (int)(chopper.getX()) - 37, (int)(chopper.getY()), 75, 50, null);
+		
+		
 		if(pause) {
 			pauseGame(g);
 		}
 	}
 	else if(chopper.getVelX() < 0){
+		g.drawImage(bomb.getBomb(), (int)(chopper.getX()) - 37, (int)(chopper.getY()), 50, 150, null);
 		g.drawImage(chopper.getChopper(), (int)(chopper.getX()) + 37, (int)(chopper.getY()), -75, 50, null);
+		
 		if(pause) {
 			pauseGame(g);
 		}
@@ -103,6 +109,7 @@ void initializeGame()
 {
 	chopper.setChopper();
 	target.setTarget();
+	bomb.setBomb();
 	
     // set the timer to record our game's speed / make the game move
     timer = new Timer(speed, this);
@@ -181,6 +188,9 @@ private class Keys extends KeyAdapter {
         if (key == KeyEvent.VK_ENTER) {
         	pause = false;
         	inGame = true;
+        }
+        if(key == KeyEvent.VK_SPACE) {
+        	bomb.drop();
         }
         if (key == KeyEvent.VK_P) {
         	
