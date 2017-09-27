@@ -4,10 +4,13 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -42,7 +45,8 @@ private static int speed = 45;
 private Chopper chopper = new Chopper(BOARDWIDTH, BOARDHEIGHT);
 private Target target = new Target(BOARDWIDTH);
 private Bomb bomb = new Bomb();
-private boolean pause = false;;
+private boolean pause = false;
+private Image background;
 
 
 
@@ -58,10 +62,9 @@ public int GetBoardHeight() {
 public Board() { 
 	
 	addKeyListener(new Keys());
-    setBackground(Color.white);
     setFocusable(true);
     setPreferredSize(new Dimension(BOARDWIDTH, BOARDHEIGHT));
-
+    
     initializeGame();
    
 }
@@ -78,6 +81,8 @@ protected void paintComponent(Graphics g) {
 // Draw our Chopper & Food (Called on repaint()).
 void draw(Graphics g) {
 	
+	g.drawImage(getBackgroundImage(), 0, 0, BOARDWIDTH, BOARDHEIGHT, null);
+	
 	if(target.getVelX() >= 0) {
 	g.drawImage(target.getTarget(), (int)target.getX()+37, BOARDHEIGHT -50, -75, 50, null);
 	}
@@ -86,18 +91,13 @@ void draw(Graphics g) {
 	}	
 	
 	if(chopper.getVelX() >= 0) {
-		g.drawImage(bomb.getBomb(), (int)(chopper.getX()) - 37, (int)(chopper.getY()), 50, 150, null);
 		g.drawImage(chopper.getChopper(), (int)(chopper.getX()) - 37, (int)(chopper.getY()), 75, 50, null);
-		
-		
 		if(pause) {
 			pauseGame(g);
 		}
 	}
 	else if(chopper.getVelX() < 0){
-		g.drawImage(bomb.getBomb(), (int)(chopper.getX()) - 37, (int)(chopper.getY()), 50, 150, null);
 		g.drawImage(chopper.getChopper(), (int)(chopper.getX()) + 37, (int)(chopper.getY()), -75, 50, null);
-		
 		if(pause) {
 			pauseGame(g);
 		}
@@ -106,10 +106,12 @@ void draw(Graphics g) {
 
 
 void initializeGame()
-{
+{	
+	setBackgroundImage();
 	chopper.setChopper();
 	target.setTarget();
 	bomb.setBomb();
+	
 	
     // set the timer to record our game's speed / make the game move
     timer = new Timer(speed, this);
@@ -227,7 +229,16 @@ private class Keys extends KeyAdapter {
             	
         }
     }
-
-
+}
+public void setBackgroundImage() {
+	background = loadImage("Images/Background.png");
+}
+private Image loadImage(String path)
+{
+	ImageIcon iih = new ImageIcon(path);
+	return iih.getImage();
+}
+private Image getBackgroundImage() {
+	return background;
 }
 }
