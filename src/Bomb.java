@@ -83,6 +83,9 @@ public Bomb(int height) {
 		return drop;
 	}
 	
+	
+	
+	
 	public void setBomb() {
 		bomb = loadImage("Images/bomb.png");
 	}

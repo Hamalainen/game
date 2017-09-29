@@ -47,6 +47,7 @@ private Target target = new Target(BOARDWIDTH);
 private Bomb bomb = new Bomb(BOARDHEIGHT);
 private boolean pause = false;
 private Image background;
+private Image explosion;
 
 
 
@@ -104,7 +105,14 @@ void draw(Graphics g) {
 	}
 	if(bomb.isDropped()) {
 		g.drawImage(bomb.getBomb(), (int)(bomb.getX())+7, (int)(bomb.getY())+46 , 15, 25, null);
+		
+		
+		if(hit()) {
+			System.out.println("hit");
+			g.drawImage(getExplosion(), (int)(bomb.getX()) - 30, BOARDHEIGHT - 100 , 100, 100, null);
+		}
 	}
+	
 	
 }
 
@@ -112,6 +120,7 @@ void draw(Graphics g) {
 void initializeGame()
 {	
 	setBackgroundImage();
+	setExplosion();
 	chopper.setChopper();
 	target.setTarget();
 	//Ska bomben sättas redan här?
@@ -241,7 +250,15 @@ private class Keys extends KeyAdapter {
         }
     }
 }
-public void setBackgroundImage() {
+
+private Boolean hit() {
+	if(bomb.getY() <= BOARDHEIGHT-100 /* && bomb.getX() == target.getX()*/) {
+		return true;
+	} 
+	return false;
+}
+
+private void setBackgroundImage() {
 	background = loadImage("Images/Background.png");
 }
 private Image loadImage(String path)
@@ -251,5 +268,13 @@ private Image loadImage(String path)
 }
 private Image getBackgroundImage() {
 	return background;
+}
+
+private void setExplosion() {
+	explosion = loadImage("Images/Explosion.png");
+}
+
+private Image getExplosion() {
+	return explosion;
 }
 }
