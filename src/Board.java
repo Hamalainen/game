@@ -105,15 +105,11 @@ void draw(Graphics g) {
 	}
 	if(bomb.isDropped()) {
 		g.drawImage(bomb.getBomb(), (int)(bomb.getX())+7, (int)(bomb.getY())+46 , 15, 25, null);
-		
-		
-		if(hit()) {
-			System.out.println("hit");
-			g.drawImage(getExplosion(), (int)(bomb.getX()) - 30, BOARDHEIGHT - 100 , 100, 100, null);
+
+		if(bomb.getY() >= BOARDHEIGHT-100) {
+			g.drawImage(getExplosion(), (int)(bomb.getX()), BOARDHEIGHT - size(50) , size(50), size(50), null);
 		}
 	}
-	
-	
 }
 
 
@@ -252,10 +248,17 @@ private class Keys extends KeyAdapter {
 }
 
 private Boolean hit() {
-	if(bomb.getY() <= BOARDHEIGHT-100 /* && bomb.getX() == target.getX()*/) {
+	if(bomb.getY() >= BOARDHEIGHT-100  && (bomb.getX() >= target.getX() && bomb.getX() <= target.getX() + 75)) {
 		return true;
 	} 
 	return false;
+}
+
+private Integer size(int small) {
+	if(hit()) {
+		return small *2;
+	}
+	return small;
 }
 
 private void setBackgroundImage() {
