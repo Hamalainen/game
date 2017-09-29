@@ -21,7 +21,7 @@ public class Board extends JPanel implements ActionListener {
 // TODO: Implement a way for the player to win
 
 // Holds height and width of the window
-private final static int BOARDWIDTH = 1000;
+private final static int BOARDWIDTH = 1200;
 private final static int BOARDHEIGHT = 980;
 
 
@@ -44,7 +44,7 @@ private static int speed = 45;
 // Instances of our Chopper & food so we can use their methods
 private Chopper chopper = new Chopper(BOARDWIDTH, BOARDHEIGHT);
 private Target target = new Target(BOARDWIDTH);
-private Bomb bomb = new Bomb();
+private Bomb bomb = new Bomb(BOARDHEIGHT);
 private boolean pause = false;
 private Image background;
 
@@ -102,6 +102,10 @@ void draw(Graphics g) {
 			pauseGame(g);
 		}
 	}
+	if(bomb.isDropped()) {
+		g.drawImage(bomb.getBomb(), (int)(bomb.getX())+7, (int)(bomb.getY())+46 , 15, 25, null);
+	}
+	
 }
 
 
@@ -110,6 +114,7 @@ void initializeGame()
 	setBackgroundImage();
 	chopper.setChopper();
 	target.setTarget();
+	//Ska bomben sättas redan här?
 	bomb.setBomb();
 	
 	
@@ -127,7 +132,7 @@ void initializeGame()
 
 void pauseGame(Graphics g) {
 
-		//Transparent rectangle
+		//Transparent rectangle with paused text
 		final int ALPHA = 175; // how much see-thru. 0 to 255
 	    final Color GP_BG = new Color(75, 75, 75, ALPHA);
 	    String text = "PAUSED";
@@ -136,9 +141,6 @@ void pauseGame(Graphics g) {
 	    g.setFont(font); 
 	    FontMetrics metrics = g.getFontMetrics(font);
 	    int x = BOARDWIDTH /2 - metrics.stringWidth(text) /2;
-	    
-	    
-	    //PauseText
 	    g.setColor(GP_BG);
 		g.drawRect(0,0,BOARDWIDTH,BOARDHEIGHT);
 		g.fillRect(0, 0, BOARDWIDTH, BOARDHEIGHT);
@@ -155,6 +157,12 @@ public void actionPerformed(ActionEvent e) {
     	chopper.tick();
     	chopper.gravity();
     	target.tick();
+    	
+    	//Ska bomb.tick köras här hela tiden eller bara när man tryckt space?
+    	if(bomb.isDropped()) {
+    		bomb.tick();
+    	}
+    	
     }
     	
     	
@@ -191,8 +199,11 @@ private class Keys extends KeyAdapter {
         	pause = false;
         	inGame = true;
         }
-        if(key == KeyEvent.VK_SPACE) {
-        	bomb.drop();
+        if(key == KeyEvent.VK_SPACE && !bomb.isDropped()) {
+    		bomb.setX(chopper.getX());
+    		bomb.setY(chopper.getY());
+    		bomb.setVelY(chopper.getVelY());
+        	bomb.drop(true);
         }
         if (key == KeyEvent.VK_P) {
         	

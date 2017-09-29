@@ -19,76 +19,40 @@ private boolean down = false;
 private boolean drop = false;
 // Stores direction of our Chopper
 
-
+public Bomb(int height) {
+	this.height = height;
+}
 
 	public double getY() {
 		return y;
 	}
 
-	public void setY(double velY) {
-		 if(y > 0) {
-			 y += velY;
-		 }
-		 else {
-			 y = 1;
-			 this.velY = 0;
-		 }
-		 if(y < height - 50)
-		 {
-			 y += velY;
-		 }
-		 else {
-			 y  = height-50;
-			 this.velY = 0;
-			 setVelX(0);
-			 this.velX = 0;
-		 }
+	public void setY(double y) {
+		this.y = y;
 	}
 
 	public double getX() {
 		return x;
 	}
 
-	public void setX(double velX) {
-		 if(x > 39) {
-			 x += velX;
-		 }
-		 else {
-			 x = 39;
-			 this.velX = 1;
-		 }
-		 if(x < width - 39)
-		 {
-			 x += velX;
-		 }
-		 else {
-			 x = width-39;
-			 this.velX = -1;
-		 }
+	public void setX(double x) {
+		this.x = x;
 	}
 	
 	public void tick() {
-		setY(this.velY);
-		setX(this.velX);
+		gravity();
+		y += velY;
+		
+		if(y > height) {
+			drop = false;
+			setVelY(-getVelY());
+			setVelX(-getVelX());
+		}
 		
 		
-		if(velX > 0.3) {
-			setVelX(-0.3);
-		}
-		else if(velX < -0.3){
-			setVelX(0.3);
-		}
 		
-		if(velY > 0.3) {
-			setVelY(-0.3);
-		}
-		else {
-			setVelY(0.3);
-		}
-		if(drop) {
-			setVelY(0.5);
-		}
 		
+	System.out.println("tick");	
 		
 	}
 	public void setVelX(double velX) {	
@@ -102,35 +66,35 @@ private boolean drop = false;
 	public void setVelY(double velY) {
 		this.velY += velY;
 	}
+	
 	public double getVelY()  {
 		return this.velY;
 	}
+	
 	public void gravity() {
 			setVelY(0.5); 
 	}
 	
-	public void drop() {
-		drop = true;
+	public void drop(Boolean omegalul) {
+		drop = omegalul;
 	}
 	
-	
-	
-	
-	
-	
-	
+	public Boolean isDropped() {
+		return drop;
+	}
 	
 	public void setBomb() {
 		bomb = loadImage("Images/bomb.png");
 	}
+	
 	private Image loadImage(String path)
 	{
 		ImageIcon iih = new ImageIcon(path);
 		return iih.getImage();
 	}
+	
 	public Image getBomb()
 	{
 		return bomb;
 	}
-	
 }
