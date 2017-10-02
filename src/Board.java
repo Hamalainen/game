@@ -31,7 +31,7 @@ private final static int BOARDHEIGHT = 980;
 
 
 // Check to see if the game is running
-private boolean inGame = false;
+//private boolean inGame = false;
 
 // Timer used to record tick times
 private Timer timer;
@@ -45,27 +45,28 @@ private static int speed = 45;
 private Chopper chopper = new Chopper(BOARDWIDTH, BOARDHEIGHT);
 private Target target = new Target(BOARDWIDTH);
 private Bomb bomb = new Bomb(BOARDHEIGHT);
-private boolean pause = false;
+//private boolean pause = false;
 private Image background;
 private Image explosion;
+private int score;
+private boolean inGame = false;
+private boolean isPaused = false;
 
 
 
-public int GetBoardWidth() {
+public int getBoardWidth() {
 	return BOARDWIDTH;
 }
 
-public int GetBoardHeight() {
+public int getBoardHeight() {
 	return BOARDHEIGHT;
 }
 
 
 public Board() { 
-	
-	addKeyListener(new Keys());
     setFocusable(true);
     setPreferredSize(new Dimension(BOARDWIDTH, BOARDHEIGHT));
-    
+    addKeyListener(new Keys());
     initializeGame();
    
 }
@@ -82,34 +83,10 @@ protected void paintComponent(Graphics g) {
 // Draw our Chopper & Food (Called on repaint()).
 void draw(Graphics g) {
 	
-	g.drawImage(getBackgroundImage(), 0, 0, BOARDWIDTH, BOARDHEIGHT, null);
+	backScreen(g);
+	gameScreen(g);
 	
-	if(target.getVelX() >= 0) {
-	g.drawImage(target.getTarget(), (int)target.getX()+37, BOARDHEIGHT -50, -75, 50, null);
-	}
-	else if(target.getVelX() < 0) {
-		g.drawImage(target.getTarget(), (int)target.getX()-37, BOARDHEIGHT -50, 75, 50, null);
-	}	
 	
-	if(chopper.getVelX() >= 0) {
-		g.drawImage(chopper.getChopper(), (int)(chopper.getX()) - 37, (int)(chopper.getY()), 75, 50, null);
-		if(pause) {
-			pauseGame(g);
-		}
-	}
-	else if(chopper.getVelX() < 0){
-		g.drawImage(chopper.getChopper(), (int)(chopper.getX()) + 37, (int)(chopper.getY()), -75, 50, null);
-		if(pause) {
-			pauseGame(g);
-		}
-	}
-	if(bomb.isDropped()) {
-		g.drawImage(bomb.getBomb(), (int)(bomb.getX())+7, (int)(bomb.getY())+46 , 15, 25, null);
-
-		if(bomb.getY() >= BOARDHEIGHT-100) {
-			g.drawImage(getExplosion(), (int)(bomb.getX()), BOARDHEIGHT - size(50) , size(50), size(50), null);
-		}
-	}
 }
 
 
@@ -119,7 +96,6 @@ void initializeGame()
 	setExplosion();
 	chopper.setChopper();
 	target.setTarget();
-	//Ska bomben sättas redan här?
 	bomb.setBomb();
 	
 	
@@ -134,6 +110,62 @@ void initializeGame()
 
 // Used to check collisions with Chopper's self and board edges
 
+void backScreen(Graphics g) {
+	//g.drawImage(getBackgroundImage(), 0, 0, BOARDWIDTH, BOARDHEIGHT, null);
+	drawBackGround(g);
+	drawTarget(g);
+	drawBomb(g);
+}
+
+void gameScreen(Graphics g) {
+	//setFocusable(true);
+	drawGameScreen(g);
+	printScore(g);
+	drawChopper(g);
+}
+
+
+void drawBackGround(Graphics g) {
+	g.drawImage(getBackgroundImage(), 0, 0, BOARDWIDTH, BOARDHEIGHT, null);
+}
+
+void drawTarget(Graphics g) {
+	if(target.getVelX() >= 0) {
+		g.drawImage(target.getTarget(), (int)target.getX()+37, BOARDHEIGHT -50, -75, 50, null);
+	}
+	else if(target.getVelX() < 0) {
+		g.drawImage(target.getTarget(), (int)target.getX()-37, BOARDHEIGHT -50, 75, 50, null);
+	}
+}
+
+void drawBomb(Graphics g) {
+	if(bomb.isDropped()) {
+		g.drawImage(bomb.getBomb(), (int)(bomb.getX())+7, (int)(bomb.getY())+46 , 15, 25, null);
+
+		if(bomb.getY() >= BOARDHEIGHT-100) {
+				g.drawImage(getExplosion(), (int)(bomb.getX()), BOARDHEIGHT - size(50) , size(50), size(50), null);
+		}
+	}
+}
+
+void drawChopper(Graphics g) {
+	if(chopper.getVelX() >= 0) {
+		g.drawImage(chopper.getChopper(), (int)(chopper.getX()) - 37, (int)(chopper.getY()), 75, 50, null);
+		
+	}
+	else if(chopper.getVelX() < 0){
+		g.drawImage(chopper.getChopper(), (int)(chopper.getX()) + 37, (int)(chopper.getY()), -75, 50, null);
+		
+	}
+}
+
+void drawGameScreen(Graphics g) {
+	final int ALPHA = 175; // how much see-thru. 0 to 255
+    final Color GP_BG = new Color(75, 75, 75, 0);
+    g.setColor(GP_BG);
+	g.drawRect(0,0,BOARDWIDTH,BOARDHEIGHT);
+	g.fillRect(0, 0, BOARDWIDTH, BOARDHEIGHT);
+}
 
 void pauseGame(Graphics g) {
 
@@ -153,28 +185,39 @@ void pauseGame(Graphics g) {
 		g.drawString(text, x, BOARDHEIGHT/2);
 }
 
+void printScore(Graphics g) {
+	String text = "Score: " + getScore().toString();
+    String fontName = "serif";
+    Font font = new Font(fontName, Font.BOLD, 25);
+    g.setFont(font); 
+    FontMetrics metrics = g.getFontMetrics(font);
+    int x = 1190 - metrics.stringWidth(text);
+	g.setColor(Color.BLACK);
+	g.drawString(text, x, 30);
+	
+}
+
 
 
 // Run constantly as long as we're in game.
 @Override
 public void actionPerformed(ActionEvent e) {
-    if (inGame == true) {
+    if(inGame) {
     	chopper.tick();
-    	chopper.gravity();
-    	target.tick();
-    	
-    	//Ska bomb.tick köras här hela tiden eller bara när man tryckt space?
-    	if(bomb.isDropped()) {
-    		bomb.tick();
-    	}
-    	
+     	chopper.gravity();
+     	target.tick();
+     	if(bomb.isDropped()) {
+     		bomb.tick();
+     	}
+    	repaint();
     }
-    	
-    	
-    
-    
-    // Repaint or 'render' our screen
-    repaint();
+}
+
+
+private void scrollWindow() {
+	if(chopper.getX() > BOARDWIDTH/2 +10) {
+		
+	}
 }
 
 private class Keys extends KeyAdapter {
@@ -201,8 +244,9 @@ private class Keys extends KeyAdapter {
             	
         }
         if (key == KeyEvent.VK_ENTER) {
-        	pause = false;
+        	isPaused = false;
         	inGame = true;
+        	System.out.println(inGame);
         }
         if(key == KeyEvent.VK_SPACE && !bomb.isDropped()) {
     		bomb.setX(chopper.getX());
@@ -212,12 +256,12 @@ private class Keys extends KeyAdapter {
         }
         if (key == KeyEvent.VK_P) {
         	
-        	if(pause == false) {
-        		pause = true;
+        	if(isPaused == false) {
+        		isPaused = true;
         		inGame = false;
         	}
         	else {
-        		pause = false;
+        		isPaused = false;
             	inGame = true;
         	}
         }
@@ -247,8 +291,18 @@ private class Keys extends KeyAdapter {
     }
 }
 
+private void setScore() {
+	score += 1;
+}
+
+private Integer getScore() {
+	return score;
+}
+
+
 private Boolean hit() {
-	if(bomb.getY() >= BOARDHEIGHT-100  && (bomb.getX() >= target.getX() && bomb.getX() <= target.getX() + 75)) {
+	if(bomb.getY() >= BOARDHEIGHT-100  && (bomb.getX() >= target.getX() - 37 && bomb.getX() <= target.getX() + 37)) {
+		setScore();
 		return true;
 	} 
 	return false;
