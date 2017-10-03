@@ -45,12 +45,10 @@ private static int speed = 45;
 private Chopper chopper = new Chopper(BOARDWIDTH, BOARDHEIGHT);
 private Target target = new Target(BOARDWIDTH);
 private Bomb bomb = new Bomb(BOARDHEIGHT);
-//private boolean pause = false;
 private Image background;
 private Image explosion;
 private int score;
-private boolean inGame = false;
-private boolean isPaused = false;
+private boolean isPaused = true;
 
 
 
@@ -82,11 +80,11 @@ protected void paintComponent(Graphics g) {
 
 // Draw our Chopper & Food (Called on repaint()).
 void draw(Graphics g) {
-	
 	backScreen(g);
 	gameScreen(g);
-	
-	
+	if(isPaused) {
+		pauseScreen(g);
+	}
 }
 
 
@@ -160,29 +158,27 @@ void drawChopper(Graphics g) {
 }
 
 void drawGameScreen(Graphics g) {
-	final int ALPHA = 175; // how much see-thru. 0 to 255
     final Color GP_BG = new Color(75, 75, 75, 0);
     g.setColor(GP_BG);
 	g.drawRect(0,0,BOARDWIDTH,BOARDHEIGHT);
 	g.fillRect(0, 0, BOARDWIDTH, BOARDHEIGHT);
 }
 
-void pauseGame(Graphics g) {
-
-		//Transparent rectangle with paused text
-		final int ALPHA = 175; // how much see-thru. 0 to 255
-	    final Color GP_BG = new Color(75, 75, 75, ALPHA);
-	    String text = "PAUSED";
-	    String fontName = "serif";
-	    Font font = new Font(fontName, Font.BOLD, 25);
-	    g.setFont(font); 
-	    FontMetrics metrics = g.getFontMetrics(font);
-	    int x = BOARDWIDTH /2 - metrics.stringWidth(text) /2;
-	    g.setColor(GP_BG);
-		g.drawRect(0,0,BOARDWIDTH,BOARDHEIGHT);
-		g.fillRect(0, 0, BOARDWIDTH, BOARDHEIGHT);
-		g.setColor(Color.RED);
-		g.drawString(text, x, BOARDHEIGHT/2);
+void pauseScreen(Graphics g) {
+	//Transparent rectangle with paused text
+	final int ALPHA = 175; // how much see-thru. 0 to 255
+	final Color GP_BG = new Color(75, 75, 75, ALPHA);
+	String text = "PAUSED";
+	String fontName = "serif";
+	Font font = new Font(fontName, Font.BOLD, 25);
+	g.setFont(font); 
+	FontMetrics metrics = g.getFontMetrics(font);
+	int x = BOARDWIDTH /2 - metrics.stringWidth(text) /2;
+	g.setColor(GP_BG);
+	g.drawRect(0,0,BOARDWIDTH,BOARDHEIGHT);
+	g.fillRect(0, 0, BOARDWIDTH, BOARDHEIGHT);
+	g.setColor(Color.RED);
+	g.drawString(text, x, BOARDHEIGHT/2);
 }
 
 void printScore(Graphics g) {
@@ -202,15 +198,15 @@ void printScore(Graphics g) {
 // Run constantly as long as we're in game.
 @Override
 public void actionPerformed(ActionEvent e) {
-    if(inGame) {
+    if(!isPaused) {
     	chopper.tick();
      	chopper.gravity();
      	target.tick();
      	if(bomb.isDropped()) {
      		bomb.tick();
      	}
-    	repaint();
     }
+    repaint();
 }
 
 
@@ -245,8 +241,6 @@ private class Keys extends KeyAdapter {
         }
         if (key == KeyEvent.VK_ENTER) {
         	isPaused = false;
-        	inGame = true;
-        	System.out.println(inGame);
         }
         if(key == KeyEvent.VK_SPACE && !bomb.isDropped()) {
     		bomb.setX(chopper.getX());
@@ -258,11 +252,9 @@ private class Keys extends KeyAdapter {
         	
         	if(isPaused == false) {
         		isPaused = true;
-        		inGame = false;
         	}
         	else {
         		isPaused = false;
-            	inGame = true;
         	}
         }
     }
