@@ -16,7 +16,7 @@ import javax.swing.KeyStroke;
 
 public class Game extends JFrame {
 Board board = new Board();
-Chopper chopper = new Chopper(board.getBoardWidth(), board.getBoardHeight());
+Chopper chopper = new Chopper(board.getBoardWidth(), board.getBoardHeight(), board.getBackgroundWidth(), board.getBackgroundHeight());
 private Target target = new Target(board.getBoardWidth());
 private Bomb bomb = new Bomb(board.getBoardHeight());
 
@@ -44,14 +44,7 @@ public static void main(String[] args) {
 
 }
 
-/*void tick() {
- 	chopper.tick();
- 	chopper.gravity();
- 	target.tick();
- 	if(bomb.isDropped()) {
- 		bomb.tick();
- 	}
-}*/
+
 
 }
 

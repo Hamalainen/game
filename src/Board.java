@@ -21,9 +21,12 @@ public class Board extends JPanel implements ActionListener {
 // TODO: Implement a way for the player to win
 
 // Holds height and width of the window
-private final static int BOARDWIDTH = 1024;
-private final static int BOARDHEIGHT = 904;
+private final static int boardWidth = 1200;
+private final static int boardHeight = 900;
 
+//Holds width and height of background
+private int backgroundWidth = 10024;
+private int backgroundHeight = 904;
 
 // The total amount of pixels the game could possibly have.
 // We don't want less, because the game would end prematurely.
@@ -42,9 +45,9 @@ private Timer timer;
 private static int speed = 45;
 
 // Instances of our Chopper & food so we can use their methods
-private Chopper chopper = new Chopper(BOARDWIDTH, BOARDHEIGHT);
-private Target target = new Target(BOARDWIDTH);
-private Bomb bomb = new Bomb(BOARDHEIGHT);
+private Chopper chopper = new Chopper(boardWidth, boardHeight, backgroundWidth, backgroundHeight);
+private Target target = new Target(boardWidth);
+private Bomb bomb = new Bomb(boardWidth);
 private Image background;
 private Image explosion;
 private int score;
@@ -53,17 +56,17 @@ private boolean isPaused = true;
 
 
 public int getBoardWidth() {
-	return BOARDWIDTH;
+	return boardWidth;
 }
 
 public int getBoardHeight() {
-	return BOARDHEIGHT;
+	return boardHeight;
 }
 
 
 public Board() { 
-   // setFocusable(true);
-    setPreferredSize(new Dimension(BOARDWIDTH, BOARDHEIGHT));
+    setFocusable(true);
+    setPreferredSize(new Dimension(boardWidth, boardHeight));
     addKeyListener(new Keys());
     initializeGame();
    
@@ -112,10 +115,10 @@ void backScreen(Graphics g) {
 	drawBackGround(g);
 	drawTarget(g);
 	drawBomb(g);
+	//drawChopper(g);
 }
 
 void gameScreen(Graphics g) {
-	setFocusable(true);
 	drawGameScreen(g);
 	printScore(g);
 	drawChopper(g);
@@ -123,15 +126,15 @@ void gameScreen(Graphics g) {
 
 
 void drawBackGround(Graphics g) {
-	g.drawImage(getBackgroundImage(), -(int)(chopper.getX()), 0, 10024, 904, null);
+	g.drawImage(getBackgroundImage(), -(int)(chopper.getX()), 0, backgroundWidth, backgroundHeight, null);
 }
 
 void drawTarget(Graphics g) {
 	if(target.getVelX() >= 0) {
-		g.drawImage(target.getTarget(), (int)target.getX()+37 - (int)chopper.getX(), BOARDHEIGHT -50, -75, 50, null);
+		g.drawImage(target.getTarget(), (int)target.getX()+37 - (int)chopper.getX(), boardHeight -50, -75, 50, null);
 	}
 	else if(target.getVelX() < 0) {
-		g.drawImage(target.getTarget(), (int)target.getX()-37 - (int)chopper.getX(), BOARDHEIGHT -50, 75, 50, null);
+		g.drawImage(target.getTarget(), (int)target.getX()-37 - (int)chopper.getX(), boardHeight -50, 75, 50, null);
 	}
 }
 
@@ -139,19 +142,19 @@ void drawBomb(Graphics g) {
 	if(bomb.isDropped()) {
 		g.drawImage(bomb.getBomb(), (int)(bomb.getX())+7, (int)(bomb.getY())+46 , 15, 25, null);
 
-		if(bomb.getY() >= BOARDHEIGHT-100) {
-				g.drawImage(getExplosion(), (int)(bomb.getX()), BOARDHEIGHT - size(50) , size(50), size(50), null);
+		if(bomb.getY() >= boardWidth-100) {
+				g.drawImage(getExplosion(), (int)(bomb.getX()), boardWidth - size(50) , size(50), size(50), null);
 		}
 	}
 }
 
 void drawChopper(Graphics g) {
 	if(chopper.getVelX() >= 0) {
-		//g.drawImage(chopper.getChopper(), (int)(chopper.getX()) - 37, (int)(chopper.getY()), 75, 50, null);
+		//g.drawImage(chopper.getChopper(), boardWidth/2-37, (int)(chopper.getY()), 75, 50, null);
 		g.drawImage(chopper.getChopper(), (int)(chopper.getX())-37, (int)(chopper.getY()), 75, 50, null);
 	}
 	else if(chopper.getVelX() < 0){
-		//g.drawImage(chopper.getChopper(), (int)(chopper.getX()) + 37, (int)(chopper.getY()), -75, 50, null);
+		//g.drawImage(chopper.getChopper(), boardWidth/2+37, (int)(chopper.getY()), -75, 50, null);
 		g.drawImage(chopper.getChopper(), (int)(chopper.getX())+37, (int)(chopper.getY()), -75, 50, null);
 		
 		
@@ -161,8 +164,8 @@ void drawChopper(Graphics g) {
 void drawGameScreen(Graphics g) {
     final Color GP_BG = new Color(75, 75, 75, 0);
     g.setColor(GP_BG);
-	g.drawRect(0,0,BOARDWIDTH,BOARDHEIGHT);
-	g.fillRect(0, 0, BOARDWIDTH, BOARDHEIGHT);
+	g.drawRect(0, 0,boardWidth,boardHeight);
+	g.fillRect(0, 0, boardWidth, boardHeight);
 }
 
 void pauseScreen(Graphics g) {
@@ -174,12 +177,12 @@ void pauseScreen(Graphics g) {
 	Font font = new Font(fontName, Font.BOLD, 25);
 	g.setFont(font); 
 	FontMetrics metrics = g.getFontMetrics(font);
-	int x = BOARDWIDTH /2 - metrics.stringWidth(text) /2;
+	int x = boardWidth /2 - metrics.stringWidth(text) /2;
 	g.setColor(GP_BG);
-	g.drawRect(0,0,BOARDWIDTH,BOARDHEIGHT);
-	g.fillRect(0, 0, BOARDWIDTH, BOARDHEIGHT);
+	g.drawRect(0,0,boardWidth, boardHeight);
+	g.fillRect(0, 0, boardWidth, boardHeight);
 	g.setColor(Color.RED);
-	g.drawString(text, x, BOARDHEIGHT/2);
+	g.drawString(text, x, boardWidth/2);
 }
 
 void printScore(Graphics g) {
@@ -188,7 +191,7 @@ void printScore(Graphics g) {
     Font font = new Font(fontName, Font.BOLD, 25);
     g.setFont(font); 
     FontMetrics metrics = g.getFontMetrics(font);
-    int x = BOARDWIDTH - 20 - metrics.stringWidth(text);
+    int x = boardWidth - 20 - metrics.stringWidth(text);
 	g.setColor(Color.BLACK);
 	g.drawString(text, x, 30);
 	
@@ -206,16 +209,11 @@ public void actionPerformed(ActionEvent e) {
      	if(bomb.isDropped()) {
      		bomb.tick();
      	}
+     	System.out.println(chopper.getX());
+     	System.out.println("Vänster: " + needScrollLeft());
+     	System.out.println("Höger: " + needScrollRight());
     }
     repaint();
-}
-
-
-private Integer scrollWindow() {
-	if(chopper.getX() + (BOARDWIDTH - 200) < 10024) {
-		return -(int)chopper.getX();
-	}
-	return 0;
 }
 
 private class Keys extends KeyAdapter {
@@ -267,16 +265,11 @@ private class Keys extends KeyAdapter {
         int key = e.getKeyCode();
 
         if (key == KeyEvent.VK_LEFT) {
-        	if(booler()) {
         		chopper.setLeft(false);
-        	}
-        	
         }
 
         if (key == KeyEvent.VK_RIGHT) {
-        	if(booler()) {
         	chopper.setRight(false);
-        	}
         }
 
         if (key == KeyEvent.VK_UP) {
@@ -303,7 +296,7 @@ private Integer getScore() {
 
 
 private Boolean hit() {
-	if(bomb.getY() >= BOARDHEIGHT-100  && (bomb.getX() >= target.getX() - 37 && bomb.getX() <= target.getX() + 37)) {
+	if(bomb.getY() >= boardWidth-100  && (bomb.getX() >= target.getX() - 37 && bomb.getX() <= target.getX() + 37)) {
 		setScore();
 		return true;
 	} 
@@ -337,17 +330,35 @@ private Image getExplosion() {
 	return explosion;
 }
 
-private boolean booler() {
-	if(chopper.getX() > 200 || chopper.getX() < BOARDWIDTH-200) {
-		return true;
+private boolean needScrollLeft() {
+	System.out.println(chopper.getX());
+	if(chopper.getX() < 400 && chopper.getVelX() < 0) {
+		return false;
 	}
-	return false;
+	return true;
+}
+private boolean needScrollRight() {
+	System.out.println(chopper.getX());
+	if(chopper.getX() > backgroundWidth - boardWidth - 300 && chopper.getVelX() > 0) {
+		return false;
+	}
+	return true;
+}
+
+private int scrollWindow() {
+	if(chopper.getX()-) {
+	
+	}
+	
 }
 
 
+public int getBackgroundHeight() {
+	return backgroundHeight;
+}
 
-
-
-
+public int getBackgroundWidth() {
+	return backgroundWidth;
+}
 
 }

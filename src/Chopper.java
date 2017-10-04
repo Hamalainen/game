@@ -10,18 +10,22 @@ private double velX = 0;
 private double velY = 0;
 private double maxVel = 8;
 private Image chopper;
-private int width;
-private int height;
+private int gameScreenWidth;
+private int gameScreenHeight;
+private int backgroundWidth;
+private int backgroundHeight;
 private boolean right = false;
 private boolean left = false;
 private boolean up = false;
 private boolean down = false;
 // Stores direction of our Chopper
 
-public Chopper(int width, int height)
+public Chopper(int gameScreenWidth, int gameScreengameScreenHeight, int backgroundWidth, int backgroundgameScreenHeight)
 {
-	this.width = width;
-	this.height = height;
+	this.gameScreenWidth = gameScreenWidth;
+	this.gameScreenHeight = gameScreengameScreenHeight;
+	this.backgroundWidth = backgroundWidth;
+	this.backgroundHeight = backgroundgameScreenHeight;
 }
 
 	public void setRight(boolean delta) {
@@ -49,12 +53,12 @@ public Chopper(int width, int height)
 			 y = 1;
 			 this.velY = 0;
 		 }
-		 if(y < height - 50)
+		 if(y < gameScreenHeight - 50)
 		 {
 			 y += velY;
 		 }
 		 else {
-			 y  = height-50;
+			 y  = gameScreenHeight-50;
 			 this.velY = 0;
 			 setVelX(0);
 			 this.velX = 0;
@@ -74,12 +78,12 @@ public Chopper(int width, int height)
 			 this.velX = 1;
 		 }
 		 
-		 if(x < 10024 - 39)
+		 if(x < backgroundWidth - gameScreenWidth - 39)
 		 {
 			 x += velX;
 		 }
 		 else {
-			 x = 10024-39;
+			 x = backgroundWidth - gameScreenWidth - 39;
 			 this.velX = -1;
 		 }
 	}
