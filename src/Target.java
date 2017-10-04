@@ -31,7 +31,7 @@ public Target(int width)
 	
 	public void tick() {
 		 setX(this.velX);
-		 if(x < width - 39) {
+		 if(x < 10024 - 39) {
 			 setVelX(4);
 		 }
 		 else {

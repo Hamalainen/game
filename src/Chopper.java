@@ -73,12 +73,13 @@ public Chopper(int width, int height)
 			 x = 39;
 			 this.velX = 1;
 		 }
-		 if(x < width - 39)
+		 
+		 if(x < 10024 - 39)
 		 {
 			 x += velX;
 		 }
 		 else {
-			 x = width-39;
+			 x = 10024-39;
 			 this.velX = -1;
 		 }
 	}

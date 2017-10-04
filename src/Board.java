@@ -21,8 +21,8 @@ public class Board extends JPanel implements ActionListener {
 // TODO: Implement a way for the player to win
 
 // Holds height and width of the window
-private final static int BOARDWIDTH = 1200;
-private final static int BOARDHEIGHT = 980;
+private final static int BOARDWIDTH = 1024;
+private final static int BOARDHEIGHT = 904;
 
 
 // The total amount of pixels the game could possibly have.
@@ -62,7 +62,7 @@ public int getBoardHeight() {
 
 
 public Board() { 
-    setFocusable(true);
+   // setFocusable(true);
     setPreferredSize(new Dimension(BOARDWIDTH, BOARDHEIGHT));
     addKeyListener(new Keys());
     initializeGame();
@@ -109,14 +109,13 @@ void initializeGame()
 // Used to check collisions with Chopper's self and board edges
 
 void backScreen(Graphics g) {
-	//g.drawImage(getBackgroundImage(), 0, 0, BOARDWIDTH, BOARDHEIGHT, null);
 	drawBackGround(g);
 	drawTarget(g);
 	drawBomb(g);
 }
 
 void gameScreen(Graphics g) {
-	//setFocusable(true);
+	setFocusable(true);
 	drawGameScreen(g);
 	printScore(g);
 	drawChopper(g);
@@ -124,15 +123,15 @@ void gameScreen(Graphics g) {
 
 
 void drawBackGround(Graphics g) {
-	g.drawImage(getBackgroundImage(), 0, 0, BOARDWIDTH, BOARDHEIGHT, null);
+	g.drawImage(getBackgroundImage(), -(int)(chopper.getX()), 0, 10024, 904, null);
 }
 
 void drawTarget(Graphics g) {
 	if(target.getVelX() >= 0) {
-		g.drawImage(target.getTarget(), (int)target.getX()+37, BOARDHEIGHT -50, -75, 50, null);
+		g.drawImage(target.getTarget(), (int)target.getX()+37 - (int)chopper.getX(), BOARDHEIGHT -50, -75, 50, null);
 	}
 	else if(target.getVelX() < 0) {
-		g.drawImage(target.getTarget(), (int)target.getX()-37, BOARDHEIGHT -50, 75, 50, null);
+		g.drawImage(target.getTarget(), (int)target.getX()-37 - (int)chopper.getX(), BOARDHEIGHT -50, 75, 50, null);
 	}
 }
 
@@ -148,11 +147,13 @@ void drawBomb(Graphics g) {
 
 void drawChopper(Graphics g) {
 	if(chopper.getVelX() >= 0) {
-		g.drawImage(chopper.getChopper(), (int)(chopper.getX()) - 37, (int)(chopper.getY()), 75, 50, null);
-		
+		//g.drawImage(chopper.getChopper(), (int)(chopper.getX()) - 37, (int)(chopper.getY()), 75, 50, null);
+		g.drawImage(chopper.getChopper(), (int)(chopper.getX())-37, (int)(chopper.getY()), 75, 50, null);
 	}
 	else if(chopper.getVelX() < 0){
-		g.drawImage(chopper.getChopper(), (int)(chopper.getX()) + 37, (int)(chopper.getY()), -75, 50, null);
+		//g.drawImage(chopper.getChopper(), (int)(chopper.getX()) + 37, (int)(chopper.getY()), -75, 50, null);
+		g.drawImage(chopper.getChopper(), (int)(chopper.getX())+37, (int)(chopper.getY()), -75, 50, null);
+		
 		
 	}
 }
@@ -187,7 +188,7 @@ void printScore(Graphics g) {
     Font font = new Font(fontName, Font.BOLD, 25);
     g.setFont(font); 
     FontMetrics metrics = g.getFontMetrics(font);
-    int x = 1190 - metrics.stringWidth(text);
+    int x = BOARDWIDTH - 20 - metrics.stringWidth(text);
 	g.setColor(Color.BLACK);
 	g.drawString(text, x, 30);
 	
@@ -210,10 +211,11 @@ public void actionPerformed(ActionEvent e) {
 }
 
 
-private void scrollWindow() {
-	if(chopper.getX() > BOARDWIDTH/2 +10) {
-		
+private Integer scrollWindow() {
+	if(chopper.getX() + (BOARDWIDTH - 200) < 10024) {
+		return -(int)chopper.getX();
 	}
+	return 0;
 }
 
 private class Keys extends KeyAdapter {
@@ -265,11 +267,16 @@ private class Keys extends KeyAdapter {
         int key = e.getKeyCode();
 
         if (key == KeyEvent.VK_LEFT) {
-        	chopper.setLeft(false);
+        	if(booler()) {
+        		chopper.setLeft(false);
+        	}
+        	
         }
 
         if (key == KeyEvent.VK_RIGHT) {
+        	if(booler()) {
         	chopper.setRight(false);
+        	}
         }
 
         if (key == KeyEvent.VK_UP) {
@@ -282,6 +289,9 @@ private class Keys extends KeyAdapter {
         }
     }
 }
+
+
+
 
 private void setScore() {
 	score += 1;
@@ -326,4 +336,18 @@ private void setExplosion() {
 private Image getExplosion() {
 	return explosion;
 }
+
+private boolean booler() {
+	if(chopper.getX() > 200 || chopper.getX() < BOARDWIDTH-200) {
+		return true;
+	}
+	return false;
+}
+
+
+
+
+
+
+
 }
