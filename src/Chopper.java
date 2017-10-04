@@ -78,12 +78,12 @@ public Chopper(int gameScreenWidth, int gameScreengameScreenHeight, int backgrou
 			 this.velX = 1;
 		 }
 		 
-		 if(x < backgroundWidth - gameScreenWidth - 39)
+		 if(x < gameScreenWidth - 39)
 		 {
 			 x += velX;
 		 }
 		 else {
-			 x = backgroundWidth - gameScreenWidth - 39;
+			 x = gameScreenWidth - 39;
 			 this.velX = -1;
 		 }
 	}
@@ -147,6 +147,15 @@ public Chopper(int gameScreenWidth, int gameScreengameScreenHeight, int backgrou
 	public Image getChopper()
 	{
 		return chopper;
+	}
+	public void setXstatic(int x) {
+		this.x = x;
+	}
+	public boolean getRight() {
+		return right;
+	}
+	public boolean getLeft() {
+		return left;
 	}
 	
 }

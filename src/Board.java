@@ -52,6 +52,8 @@ private Image background;
 private Image explosion;
 private int score;
 private boolean isPaused = true;
+private double backgroundX = 0;
+private int scrollPadding = 200; 
 
 
 
@@ -126,15 +128,16 @@ void gameScreen(Graphics g) {
 
 
 void drawBackGround(Graphics g) {
-	g.drawImage(getBackgroundImage(), -(int)(chopper.getX()), 0, backgroundWidth, backgroundHeight, null);
+	g.drawImage(getBackgroundImage(), (int)(backgroundScroll()), 0, backgroundWidth, backgroundHeight, null);
+	System.out.println(-(int)(chopper.getX()));
 }
 
 void drawTarget(Graphics g) {
 	if(target.getVelX() >= 0) {
-		g.drawImage(target.getTarget(), (int)target.getX()+37 - (int)chopper.getX(), boardHeight -50, -75, 50, null);
+		g.drawImage(target.getTarget(), (int)target.getX()+37 + (int)(backgroundX), boardHeight -50, -75, 50, null);
 	}
 	else if(target.getVelX() < 0) {
-		g.drawImage(target.getTarget(), (int)target.getX()-37 - (int)chopper.getX(), boardHeight -50, 75, 50, null);
+		g.drawImage(target.getTarget(), (int)target.getX()-37 + (int)(backgroundX), boardHeight -50, 75, 50, null);
 	}
 }
 
@@ -182,7 +185,7 @@ void pauseScreen(Graphics g) {
 	g.drawRect(0,0,boardWidth, boardHeight);
 	g.fillRect(0, 0, boardWidth, boardHeight);
 	g.setColor(Color.RED);
-	g.drawString(text, x, boardWidth/2);
+	g.drawString(text, x, boardHeight/2);
 }
 
 void printScore(Graphics g) {
@@ -339,17 +342,34 @@ private boolean needScrollLeft() {
 }
 private boolean needScrollRight() {
 	System.out.println(chopper.getX());
-	if(chopper.getX() > backgroundWidth - boardWidth - 300 && chopper.getVelX() > 0) {
+	if(chopper.getX() > backgroundWidth - boardWidth - scrollPadding && chopper.getVelX() > 0) {
 		return false;
 	}
 	return true;
 }
 
-private int scrollWindow() {
-	if(chopper.getX()-) {
-	
+private double backgroundScroll() {
+
+	System.out.println("BackgroundX = " +  backgroundX);
+	if(chopper.getY() < boardHeight - 51) {
+		//Right
+		if(chopper.getX() > boardWidth - scrollPadding - 39 && backgroundX > -backgroundWidth + boardWidth + 39) {
+			if(backgroundX > -backgroundWidth + boardWidth + scrollPadding + 39 && chopper.getVelX() > 0) {
+				chopper.setXstatic(boardWidth - scrollPadding - 39);
+				backgroundX -= 30;
+			}
+		}
+		//Left 
+		if(chopper.getX() < scrollPadding + 39 && backgroundX < 0) {
+			System.out.println("Inside 1");
+			if(chopper.getX() < scrollPadding + 39 && chopper.getVelX() < 0) {
+				chopper.setXstatic(scrollPadding + 39);
+				backgroundX += 30;
+			}
+			
+		}
 	}
-	
+	return backgroundX;
 }
 
 
