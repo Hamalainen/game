@@ -356,7 +356,7 @@ private double backgroundScroll() {
 		if(chopper.getX() > boardWidth - scrollPadding - 39 && backgroundX > -backgroundWidth + boardWidth + 39) {
 			if(backgroundX > -backgroundWidth + boardWidth + scrollPadding + 39 && chopper.getVelX() > 0) {
 				chopper.setXstatic(boardWidth - scrollPadding - 39);
-				backgroundX -= 30;
+				backgroundX += -chopper.getVelX();
 			}
 		}
 		//Left 
@@ -364,7 +364,7 @@ private double backgroundScroll() {
 			System.out.println("Inside 1");
 			if(chopper.getX() < scrollPadding + 39 && chopper.getVelX() < 0) {
 				chopper.setXstatic(scrollPadding + 39);
-				backgroundX += 30;
+				backgroundX += -chopper.getVelX();
 			}
 			
 		}

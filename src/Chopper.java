@@ -8,7 +8,7 @@ private double x = 39;
 private double y = 1;
 private double velX = 0;
 private double velY = 0;
-private double maxVel = 8;
+private double maxVel = 25;
 private Image chopper;
 private int gameScreenWidth;
 private int gameScreenHeight;
@@ -91,16 +91,16 @@ public Chopper(int gameScreenWidth, int gameScreengameScreenHeight, int backgrou
 	public void tick() {
 		setY(this.velY);
 		setX(this.velX);
-		if(right) {
+		if(right && this.velX < maxVel) {
 			setVelX(0.8);
 		}
-		if(left) {
+		if(left && this.velX < maxVel) {
 			setVelX(-0.8);
 		}
-		if(up) {
+		if(up && this.velY < maxVel) {
 			setVelY(-1.2);
 		}
-		if(down) {
+		if(down && this.velY < maxVel) {
 			setVelY(0.8);
 		}
 		
@@ -120,6 +120,7 @@ public Chopper(int gameScreenWidth, int gameScreengameScreenHeight, int backgrou
 	}
 	public void setVelX(double velX) {	
 		this.velX += velX;
+		System.out.println(this.velX);
 	}
 	
 	public double getVelX() {
