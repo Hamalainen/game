@@ -16,7 +16,7 @@ import javax.swing.KeyStroke;
 
 public class Game extends JFrame {
 Board board = new Board();
-Chopper chopper = new Chopper(board.getBoardWidth(), board.getBoardHeight(), board.getBackgroundWidth(), board.getBackgroundHeight());
+Chopper chopper = new Chopper(board.getBoardWidth(), board.getBoardHeight(), board.getBackgroundWidth(), board.getBackgroundHeight(), board.getChopperPadding());
 private Target target = new Target(board.getBoardWidth());
 private Bomb bomb = new Bomb(board.getBoardHeight());
 

@@ -27,7 +27,7 @@ private final static int boardHeight = 900;
 //Holds width and height of background
 private int backgroundWidth = 10024;
 private int backgroundHeight = 904;
-
+private int chopperPadding= 39;
 // The total amount of pixels the game could possibly have.
 // We don't want less, because the game would end prematurely.
 // We don't more because there would be no way to let the player win.
@@ -45,7 +45,7 @@ private Timer timer;
 private static int speed = 45;
 
 // Instances of our Chopper & food so we can use their methods
-private Chopper chopper = new Chopper(boardWidth, boardHeight, backgroundWidth, backgroundHeight);
+private Chopper chopper = new Chopper(boardWidth, boardHeight, backgroundWidth, backgroundHeight, chopperPadding);
 private Target target = new Target(boardWidth);
 private Bomb bomb = new Bomb(boardWidth);
 private Image background;
@@ -53,7 +53,8 @@ private Image explosion;
 private int score;
 private boolean isPaused = true;
 private double backgroundX = 0;
-private int scrollPadding = 200; 
+private int scrollPadding = 400; 
+
 
 
 
@@ -129,7 +130,6 @@ void gameScreen(Graphics g) {
 
 void drawBackGround(Graphics g) {
 	g.drawImage(getBackgroundImage(), (int)(backgroundScroll()), 0, backgroundWidth, backgroundHeight, null);
-	System.out.println(-(int)(chopper.getX()));
 }
 
 void drawTarget(Graphics g) {
@@ -153,11 +153,9 @@ void drawBomb(Graphics g) {
 
 void drawChopper(Graphics g) {
 	if(chopper.getVelX() >= 0) {
-		//g.drawImage(chopper.getChopper(), boardWidth/2-37, (int)(chopper.getY()), 75, 50, null);
 		g.drawImage(chopper.getChopper(), (int)(chopper.getX())-37, (int)(chopper.getY()), 75, 50, null);
 	}
 	else if(chopper.getVelX() < 0){
-		//g.drawImage(chopper.getChopper(), boardWidth/2+37, (int)(chopper.getY()), -75, 50, null);
 		g.drawImage(chopper.getChopper(), (int)(chopper.getX())+37, (int)(chopper.getY()), -75, 50, null);
 		
 		
@@ -213,8 +211,6 @@ public void actionPerformed(ActionEvent e) {
      		bomb.tick();
      	}
      	System.out.println(chopper.getX());
-     	System.out.println("Vänster: " + needScrollLeft());
-     	System.out.println("Höger: " + needScrollRight());
     }
     repaint();
 }
@@ -333,42 +329,27 @@ private Image getExplosion() {
 	return explosion;
 }
 
-private boolean needScrollLeft() {
-	System.out.println(chopper.getX());
-	if(chopper.getX() < 400 && chopper.getVelX() < 0) {
-		return false;
-	}
-	return true;
-}
-private boolean needScrollRight() {
-	System.out.println(chopper.getX());
-	if(chopper.getX() > backgroundWidth - boardWidth - scrollPadding && chopper.getVelX() > 0) {
-		return false;
-	}
-	return true;
-}
-
 private double backgroundScroll() {
-
-	System.out.println("BackgroundX = " +  backgroundX);
+	//Check if the chopper is in the air
 	if(chopper.getY() < boardHeight - 51) {
 		//Right
-		if(chopper.getX() > boardWidth - scrollPadding - 39 && backgroundX > -backgroundWidth + boardWidth + 39) {
-			if(backgroundX > -backgroundWidth + boardWidth + scrollPadding + 39 && chopper.getVelX() > 0) {
-				chopper.setXstatic(boardWidth - scrollPadding - 39);
-				backgroundX += -chopper.getVelX();
+		if(chopper.getX() > boardWidth - scrollPadding - chopperPadding && backgroundX > -backgroundWidth + boardWidth + chopperPadding) {
+			if(backgroundX > -backgroundWidth + boardWidth + scrollPadding + chopperPadding) {
+				//chopper.setXstatic(boardWidth - scrollPadding - chopperPadding);
+				backgroundX -= 25;
+				//backgroundX += -chopper.getVelX();
 			}
 		}
 		//Left 
-		if(chopper.getX() < scrollPadding + 39 && backgroundX < 0) {
-			System.out.println("Inside 1");
-			if(chopper.getX() < scrollPadding + 39 && chopper.getVelX() < 0) {
-				chopper.setXstatic(scrollPadding + 39);
-				backgroundX += -chopper.getVelX();
+		if(chopper.getX() < scrollPadding + chopperPadding && backgroundX < 0) {
+			if(chopper.getX() < scrollPadding + chopperPadding) {
+				//chopper.setXstatic(scrollPadding + chopperPadding);
+				backgroundX += 25;
+				//backgroundX += -chopper.getVelX();
 			}
-			
 		}
 	}
+	System.out.println("backgroundX: " + backgroundX);
 	return backgroundX;
 }
 
@@ -381,4 +362,7 @@ public int getBackgroundWidth() {
 	return backgroundWidth;
 }
 
+public int getChopperPadding() {
+	return chopperPadding;
+}
 }

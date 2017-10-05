@@ -18,14 +18,17 @@ private boolean right = false;
 private boolean left = false;
 private boolean up = false;
 private boolean down = false;
+private int chopperPadding;
+
 // Stores direction of our Chopper
 
-public Chopper(int gameScreenWidth, int gameScreengameScreenHeight, int backgroundWidth, int backgroundgameScreenHeight)
+public Chopper(int gameScreenWidth, int gameScreengameScreenHeight, int backgroundWidth, int backgroundgameScreenHeight, int chopperPadding)
 {
 	this.gameScreenWidth = gameScreenWidth;
 	this.gameScreenHeight = gameScreengameScreenHeight;
 	this.backgroundWidth = backgroundWidth;
 	this.backgroundHeight = backgroundgameScreenHeight;
+	this.chopperPadding = chopperPadding;
 }
 
 	public void setRight(boolean delta) {
@@ -70,20 +73,20 @@ public Chopper(int gameScreenWidth, int gameScreengameScreenHeight, int backgrou
 	}
 
 	public void setX(double velX) {
-		 if(x > 39) {
+		 if(x > chopperPadding) {
 			 x += velX;
 		 }
 		 else {
-			 x = 39;
+			 x = chopperPadding;
 			 this.velX = 1;
 		 }
 		 
-		 if(x < gameScreenWidth - 39)
+		 if(x < gameScreenWidth - chopperPadding)
 		 {
 			 x += velX;
 		 }
 		 else {
-			 x = gameScreenWidth - 39;
+			 x = gameScreenWidth - chopperPadding;
 			 this.velX = -1;
 		 }
 	}
@@ -120,7 +123,6 @@ public Chopper(int gameScreenWidth, int gameScreengameScreenHeight, int backgrou
 	}
 	public void setVelX(double velX) {	
 		this.velX += velX;
-		System.out.println(this.velX);
 	}
 	
 	public double getVelX() {
